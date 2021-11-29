@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-#W1nz4c4r
+#-------Author-------------
+#Ricardo Morales (W1nz4c4r)
+#--------------------------
 import sys
 import subprocess
 import re
-import pyperclip as pc
 
 def showInfo(value, ttl):
     if value == 1:
