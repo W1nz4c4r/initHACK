@@ -54,7 +54,7 @@ def create_Workspace():
 
 def ip_portScan(IP):
     print("[+] Nmap command copied to the clipboard")
-    command = "nmap -sS -sV -sC -p- -vvv {} -oA allPorts ".format(IP)
+    command = "nmap -sS -sV -sC -p- -vvv {} -oA nmap/allPorts ".format(IP)
     subprocess.run("xclip -sel clip", universal_newlines=True, input=command, shell=True)
 
 
