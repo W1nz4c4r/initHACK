@@ -59,7 +59,7 @@ def ip_portScan(IP,fullcommand,ports):
         print("\t[+] Quick Nmap command copied to the clipboard")
         command = "sudo nmap -p- --open -sS -vvv -n -Pn  {} -oN nmap/OP_ports".format(IP)
         subprocess.run("xclip -sel clip", universal_newlines=True, input=command, shell=True)
-        print("\n\n[+] Command to extract ports: \n\t- cat1 nmap/OP_ports | grep 'open' | awk '{ print $1 }' | awk '{print ($0+0)}' | sed -z 's/\\n/,/g;s/,$/\\n/'")
+        print("\n\n[+] Command to extract ports: \n\t- cat nmap/OP_ports | grep 'open' | awk '{ print $1 }' | awk '{print ($0+0)}' | sed -z 's/\\n/,/g;s/,$/\\n/'")
     elif fullcommand == True:
         #Parses the specified file and extracts open ports as a comma-separated list.
         #Returns:
