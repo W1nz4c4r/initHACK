@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #-------Author-------------
-#Ricardo Morales (W1nz4c4r)
+#W1nz4c4r
 #--------------------------
 import sys
 import subprocess
@@ -27,13 +27,10 @@ def whichSystem(IP):
          if result >= 0 and result <= 64:
              #Linux machine
              showInfo(1, result)
-             create_Workspace()
-             ip_portScan(IP)
          elif result >= 65 and result <= 128:
              #Windows machine
              showInfo(2, result)
-             create_Workspace()
-             ip_portScan(IP)
+             
          else:
              print("Error Please check the IP")
              sys.exit(1)
@@ -41,29 +38,44 @@ def whichSystem(IP):
          print("[-] Check your input!")
          sys.exit(1)
 
-def create_Workspace():
-    print("[+] Creating folders...")
-    #making dir's (Content, nmap and exploits)
-    #making nmap
-    nmap_Proc = subprocess.run(["mkdir nmap"], shell=True)
-    #making contect forlder
-    cont_Proc = subprocess.run(["mkdir content"], shell=True)
-    #making exploits forlder
-    exp_Proc = subprocess.run(["mkdir exploits"], shell=True)
-    print("[+] Creating folders => DONE")
+def create_Workspace(fullcommand):
+    if fullcommand == False:
+        print("[+] Creating folders...")
+        #making dir's (Content, nmap and exploits)
+        #making nmap
+        nmap_Proc = subprocess.run(["mkdir nmap 2>/dev/null"], shell=True)
+        #making contect forlder
+        cont_Proc = subprocess.run(["mkdir content 2>/dev/null"], shell=True)
+        #making exploits forlder
+        exp_Proc = subprocess.run(["mkdir exploits 2>/dev/null"], shell=True)
+        print("[+] Creating folders => DONE")
+    elif fullcommand == True:
+        print("[!] Skipping workspace...")
 
-def ip_portScan(IP):
-    print("[+] Nmap command copied to the clipboard")
-    command = "nmap -sS -sV -sC -p- -vvv {} -oA nmap/allPorts ".format(IP)
-    subprocess.run("xclip -sel clip", universal_newlines=True, input=command, shell=True)
+    
 
+def ip_portScan(IP,fullcommand,ports):
+    if fullcommand == False:
+        print("\t[+] Quick Nmap command copied to the clipboard")
+        command = "sudo nmap -p- --open -sS -vvv -n -Pn  {} -oN nmap/OP_ports".format(IP)
+        subprocess.run("xclip -sel clip", universal_newlines=True, input=command, shell=True)
+        print("\n\n[+] Command to extract ports: \n\t- cat1 nmap/OP_ports | grep 'open' | awk '{ print $1 }' | awk '{print ($0+0)}' | sed -z 's/\\n/,/g;s/,$/\\n/'")
+    elif fullcommand == True:
+        #Parses the specified file and extracts open ports as a comma-separated list.
+        #Returns:
+        #A string containing comma-separated open ports, or an empty string if no ports are found.
+        print("\t[+] FULL Nmap command copied to the clipboard")        
+        command = "sudo nmap -sS -sV -sC -p{} -Pn -n -vvv {} -oA nmap/allPorts ".format(ports,IP)
+        subprocess.run("xclip -sel clip", universal_newlines=True, input=command, shell=True)
 
-
-
-def main(IP):
+def main(IP, fullCommand=False, ports="insert port"):
     print("\n[+] Checking the IP : {}".format(IP))
-    whichSystem(IP)
-
+    if fullCommand == False:
+        whichSystem(IP)
+    elif fullCommand == True:
+        print('[!] Skipping system recon...')
+    create_Workspace(fullCommand)
+    ip_portScan(IP, fullCommand, ports)
 
 
 
@@ -71,7 +83,23 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         IP = sys.argv[1]
         main(IP)
+    elif len(sys.argv) == 3 or len(sys.argv) == 4:
+        IP = sys.argv[1]
+        if sys.argv[2] == '-p':
+            ports = sys.argv[3]
+            #print(ports)
+            # check if number
+            num_ports = ports.split(',')
+            for x in num_ports:
+                if x.isdigit():
+                    None
+                else:
+                    sys.exit(1)
+            main(IP, True, ports)
+
+            
     else:
-        print("usage: python3 rams.py <IP>")
-        print("example: python3 rams.py 192.163.0.25")
+        print("[!] Usage: python3 initHACK.py <IP>")
+        print("\t- example: python3 initHACK.py 192.163.0.25 -p")
+        print("\n[!] -p -->specify ports")
         sys.exit(1)
