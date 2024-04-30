@@ -14,6 +14,20 @@ Make sure you have `xclip` installed on your system. You can usually install it 
 1. Run the script with the target IP address:
 
 ```bash
+python3 /opt/initHACK.py 10.10.11.13
+```
+
+
+![alt text](image.png)
+
+2. The script will:
+
+* Check the target's OS (Linux/Windows)
+* Create the testing environment folders (Content, Exploits, Nmap, Post-exploit for large networks)
+* Copy a basic Nmap scan command to your clipboard targeting open ports.
+
+3. Paste the copied command and run it to scan for open ports.
+```bash
 sudo nmap -p- --open -sS -vvv -n -Pn  10.10.11.13 -oN nmap/OP_ports
 ```
 
@@ -24,15 +38,6 @@ sudo nmap -p- --open -sS -vvv -n -Pn  10.10.11.13 -oN nmap/OP_ports
 * **-n** --> Never do DNS resolution
 * **-Pn** --> skip host discovery
 * **-oN** --> normal output
-
-
-2. The script will:
-
-* Check the target's OS (Linux/Windows)
-* Create the testing environment folders (Content, Exploits, Nmap, Post-exploit for large networks)
-* Copy a basic Nmap scan command to your clipboard targeting open ports.
-
-3. Paste the copied command and run it to scan for open ports.
 
 4. to extract the ports form the scan I just copy and pasted the command provided at the end of initHAck
 
