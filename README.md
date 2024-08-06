@@ -2,31 +2,69 @@
 
 This Python script streamlines the initial setup for penetration testing by automating folder creation and Nmap scan configuration. It saves you time by handling repetitive tasks, allowing you to focus on the actual testing process.
 
+## Features
+
+* Check the target's OS (Linux/Windows).
+* Create testing environment folders (Content, Exploits & Nmap), with the ability to create more folders if specified.
+* Perform an Nmap scan to find open ports.
+* Perform a full Nmap scan on the specified ports.
+
+## Pre-requisites
+
+Ensure you have the following Python libraries installed:
+
+sys
+subprocess
+re
+art
+signal
+ipaddress
+termcolor
+You can install the required libraries using pip:
+```bash
+pip install art termcolor
+```
 
 ## Getting Started
 
-Make sure you have `xclip` installed on your system. You can usually install it using your package manager (e.g., `apt install xclip` on Debian-based systems).
-
-
+Clone the repository:
+```bash
+git clone https://github.com/W1nz4c4r/initHACK.git
+cd initHACK
+```
 ## Usage
 
-### Command: Scan for all open ports 
-1. Run the script with the target IP address:
+Run the script 
 
 ```bash
-python3 /opt/initHACK.py 10.10.11.13
+python3 /opt/initHACK.py 
 ```
 
 
-![alt text](image.png)
+![alt text](initHACK.png)
 
-2. The script will:
 
-* Check the target's OS (Linux/Windows)
-* Create the testing environment folders (Content, Exploits, Nmap, Post-exploit for large networks)
-* Copy a basic Nmap scan command to your clipboard targeting open ports.
 
-3. Paste the copied command and run it to scan for open ports.
+### Option 1: Scan the target for OS
+
+![alt text](option1.png)
+
+This will ping the target machine. Based on the *TTL response*, the script will determine the target's *OS*.
+
+### Options 2: Create Directories
+
+This will create the working directories commonly used in a pentest, with the possibility of creating extra directories if needed. The directories created will be:
+
+* nmap
+* content
+* exploits
+
+![alt text](option2.png)
+
+
+### Option 3: Scan for open ports
+This option will perform an Nmap scan looking for the open ports on the specified target.
+
 ```bash
 sudo nmap -p- --open -sS -vvv -n -Pn  10.10.11.13 -oN nmap/OP_ports
 ```
@@ -39,32 +77,24 @@ sudo nmap -p- --open -sS -vvv -n -Pn  10.10.11.13 -oN nmap/OP_ports
 * **-Pn** --> skip host discovery
 * **-oN** --> normal output
 
-4. to extract the ports form the scan I just copy and pasted the command provided at the end of initHAck
+![alt text](option3.png)
 
-```bash
-cat nmap/OP_ports | grep 'open' | awk '{ print $1 }' | awk '{print ($0+0)}' | sed -z 's/\n/,/g;s/,$/\n/'
-```
-
-
-
-### Command: Scan by specifying ports 
-
-If you already know which ports are open, you can speed up the process by specifying them:
-
-1. Extract the ports --> command provided in *step 4* of  [Scan for all open ports](#command-scan-for-all-open-ports)
-
-```bash
-python3 /opt/initHACK.py 10.10.11.13 -p 22,80,8000
-```
-![alt text](image-1.png)
-
-2. Run the script with the target IP and desired ports (comma-separated):
+### Option 4: Perform a full scan on the target
+This option will perform a full scan over the open ports previously found.
 
 ```bash
 sudo nmap -sS -sV -sC -p22,80,8000 -Pn -n -vvv 10.10.11.13 -oA nmap/allPorts
 ```
+* **-sS**: TCP SYN scan
+* **-sV**: Version detection
+* **-sC**: Run default scripts
+* **-p**: Ports to scan
+* **-Pn**: Skip host discovery
+* **-n**: Never do DNS resolution
+* **-vvv**: Verbosity level
+* **-oA**: Output in three major formats
 
-
+![alt text](option4.png)
 
 ***Credits:** Inspired by s4vitar's work. I just wanted to make a more presonalized version that fits more to how im used to work. Please, Feel free to reach out if you have any questions or suggestions for improvement!
 
